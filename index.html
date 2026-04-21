@@ -4,83 +4,144 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Simple month-view calendar with event management">
-  <meta name="theme-color" content="#4f8ef7">
+  <meta name="theme-color" content="#1a73e8">
   <title>Calendar</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234f8ef7'/><rect x='6' y='10' width='20' height='16' rx='2' fill='white'/><rect x='6' y='6' width='20' height='7' rx='2' fill='%233a7be0'/><rect x='10' y='4' width='3' height='5' rx='1.5' fill='white'/><rect x='19' y='4' width='3' height='5' rx='1.5' fill='white'/><rect x='9' y='16' width='4' height='4' rx='1' fill='%234f8ef7'/><rect x='14' y='16' width='4' height='4' rx='1' fill='%234f8ef7'/><rect x='19' y='16' width='4' height='4' rx='1' fill='%234f8ef7'/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231a73e8'/><rect x='6' y='10' width='20' height='16' rx='2' fill='white'/><rect x='6' y='6' width='20' height='7' rx='2' fill='%231557b0'/><rect x='10' y='4' width='3' height='5' rx='1.5' fill='white'/><rect x='19' y='4' width='3' height='5' rx='1.5' fill='white'/></svg>">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <header id="cal-header">
-    <button id="btn-prev" aria-label="Previous month">&#8249;</button>
-    <h1 id="month-label"></h1>
-    <button id="btn-next" aria-label="Next month">&#8250;</button>
-    <button id="btn-today">Today</button>
+<div class="app" id="app">
+
+  <!-- Top Bar -->
+  <header id="top-bar">
+    <div id="top-bar-left">
+      <button id="btn-menu" aria-label="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+          <rect y="1"  width="18" height="2" rx="1"/>
+          <rect y="8"  width="18" height="2" rx="1"/>
+          <rect y="15" width="18" height="2" rx="1"/>
+        </svg>
+      </button>
+      <div id="logo">
+        <svg class="logo-icon" viewBox="0 0 36 36" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="6" width="32" height="28" rx="3" fill="white" stroke="#dadce0" stroke-width="1.5"/>
+          <rect x="2" y="6" width="32" height="11" rx="3" fill="#1a73e8"/>
+          <rect x="2" y="13" width="32" height="4" fill="#1a73e8"/>
+          <text x="18" y="30" text-anchor="middle" font-size="12" font-weight="800" fill="#1a73e8" font-family="sans-serif">31</text>
+          <line x1="11" y1="3" x2="11" y2="11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <line x1="25" y1="3" x2="25" y2="11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-text">Calendar</span>
+      </div>
+    </div>
+
+    <div id="top-bar-nav">
+      <button id="btn-today">Today</button>
+      <button id="btn-prev" aria-label="Previous month">&#8249;</button>
+      <button id="btn-next" aria-label="Next month">&#8250;</button>
+      <h1 id="month-label"></h1>
+    </div>
   </header>
 
-  <div id="cal-dow-row" aria-hidden="true">
-    <span>Sun</span>
-    <span>Mon</span>
-    <span>Tue</span>
-    <span>Wed</span>
-    <span>Thu</span>
-    <span>Fri</span>
-    <span>Sat</span>
-  </div>
+  <!-- App Body -->
+  <div class="app-body">
 
-  <main id="cal-grid" role="grid" aria-label="Calendar"></main>
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div id="sidebar-inner">
 
-  <button id="btn-add-event" aria-label="Add event">+</button>
+        <button id="btn-create" aria-label="Create event">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <line x1="10" y1="3" x2="10" y2="17" stroke="#3c4043" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="3" y1="10" x2="17" y2="10" stroke="#3c4043" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+          <span>Create</span>
+        </button>
 
-  <div id="modal-overlay" role="dialog" aria-modal="true"
-       aria-labelledby="modal-title" hidden>
-    <div id="modal-box">
-      <h2 id="modal-title">Add Event</h2>
-
-      <form id="event-form" novalidate>
-        <div class="field-group">
-          <label for="f-title">Title <span class="required" aria-hidden="true">*</span></label>
-          <input id="f-title" type="text" required autocomplete="off" placeholder="Event title">
-          <span class="field-error" id="err-title" role="alert" hidden></span>
-        </div>
-
-        <div class="field-group">
-          <label for="f-date">Date <span class="required" aria-hidden="true">*</span></label>
-          <input id="f-date" type="date" required>
-          <span class="field-error" id="err-date" role="alert" hidden></span>
-        </div>
-
-        <div class="field-row">
-          <div class="field-group">
-            <label for="f-start">Start time</label>
-            <input id="f-start" type="time">
+        <div id="mini-cal">
+          <div id="mini-cal-header">
+            <span id="mini-label"></span>
+            <div id="mini-nav">
+              <button id="mini-prev" aria-label="Previous month">&#8249;</button>
+              <button id="mini-next" aria-label="Next month">&#8250;</button>
+            </div>
           </div>
-          <div class="field-group">
-            <label for="f-end">End time</label>
-            <input id="f-end" type="time">
+          <div id="mini-dow" aria-hidden="true">
+            <span>S</span><span>M</span><span>T</span>
+            <span>W</span><span>T</span><span>F</span><span>S</span>
           </div>
-        </div>
-        <span class="field-error" id="err-time" role="alert" hidden></span>
-
-        <div class="field-group">
-          <label for="f-desc">Description</label>
-          <textarea id="f-desc" rows="3" placeholder="Optional description"></textarea>
+          <div id="mini-grid"></div>
         </div>
 
-        <div class="field-group field-group--color">
-          <label for="f-color">Color</label>
-          <input id="f-color" type="color" value="#4f8ef7">
-        </div>
+      </div>
+    </aside>
 
-        <div id="modal-actions">
-          <button type="button" id="btn-delete" hidden>Delete</button>
-          <button type="button" id="btn-cancel">Cancel</button>
-          <button type="submit" id="btn-save">Save</button>
-        </div>
-      </form>
+    <!-- Calendar Area -->
+    <div id="cal-area">
+      <div id="cal-dow-row" aria-hidden="true">
+        <span>SUN</span><span>MON</span><span>TUE</span>
+        <span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+      </div>
+      <main id="cal-grid" role="grid" aria-label="Calendar"></main>
     </div>
+
   </div>
 
-  <script src="app.js"></script>
+</div>
+
+<!-- FAB (mobile only) -->
+<button id="btn-add-event" aria-label="Add event">+</button>
+
+<!-- Modal -->
+<div id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div id="modal-box">
+    <h2 id="modal-title">Add Event</h2>
+
+    <form id="event-form" novalidate>
+      <div class="field-group">
+        <label for="f-title">Title <span class="required" aria-hidden="true">*</span></label>
+        <input id="f-title" type="text" required autocomplete="off" placeholder="Add title">
+        <span class="field-error" id="err-title" role="alert" hidden></span>
+      </div>
+
+      <div class="field-group">
+        <label for="f-date">Date <span class="required" aria-hidden="true">*</span></label>
+        <input id="f-date" type="date" required>
+        <span class="field-error" id="err-date" role="alert" hidden></span>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="f-start">Start time</label>
+          <input id="f-start" type="time">
+        </div>
+        <div class="field-group">
+          <label for="f-end">End time</label>
+          <input id="f-end" type="time">
+        </div>
+      </div>
+      <span class="field-error" id="err-time" role="alert" hidden></span>
+
+      <div class="field-group">
+        <label for="f-desc">Description</label>
+        <textarea id="f-desc" rows="3" placeholder="Add description"></textarea>
+      </div>
+
+      <div class="field-group field-group--color">
+        <label for="f-color">Color</label>
+        <input id="f-color" type="color" value="#1a73e8">
+      </div>
+
+      <div id="modal-actions">
+        <button type="button" id="btn-delete" hidden>Delete</button>
+        <button type="button" id="btn-cancel">Cancel</button>
+        <button type="submit" id="btn-save">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
